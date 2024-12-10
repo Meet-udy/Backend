@@ -11,13 +11,20 @@ import com.api.meetudy.member.entity.Member;
 import com.api.meetudy.member.enums.LoginType;
 import com.api.meetudy.member.mapper.MemberMapper;
 import com.api.meetudy.member.repository.MemberRepository;
+import com.api.meetudy.oauth.dto.KakaoTokenDto;
+import com.api.meetudy.oauth.service.KakaoLoginService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +36,7 @@ public class MemberService {
     private final JwtTokenProvider tokenProvider;
     private final MemberMapper memberMapper;
     private final TokenService tokenService;
+    private final KakaoLoginService kakaoLoginService;
 
     @Transactional
     public String signUp(SignUpDto signUpDto) {
@@ -37,8 +45,7 @@ public class MemberService {
         }
 
         Member member = memberMapper.toMember(signUpDto);
-        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
-        member.updatePassword(encodedPassword);
+        member.updatePassword(passwordEncoder.encode(signUpDto.getPassword()));
         member.updateLoginType(LoginType.JWT);
 
         memberRepository.save(member);
@@ -62,6 +69,34 @@ public class MemberService {
         tokenService.storeRefreshToken(authentication.getName(), jwtToken);
 
         return jwtToken;
+    }
+
+    @Transactional
+    public JwtTokenDto signInWithKakao(String code) {
+        ResponseEntity<String> accessToken = kakaoLoginService.requestAccessToken(code);
+        KakaoTokenDto kakaoToken = kakaoLoginService.getAccessToken(accessToken);
+
+        ResponseEntity<String> userInfo = kakaoLoginService.requestUserInfo(kakaoToken);
+
+        Member member = kakaoLoginService.getUserInfo(userInfo);
+        Member existMember = memberRepository.findByEmail(member.getEmail()).orElse(null);
+
+        if(existMember == null) {
+            member.updateLoginType(LoginType.KAKAO);
+            member.updateRoles(Collections.singletonList("ROLE_USER"));
+            memberRepository.save(member);
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(member.getEmail(), null,
+                        member.getRoles().stream()
+                                .map(SimpleGrantedAuthority::new)
+                                .collect(Collectors.toList()));
+
+        JwtTokenDto tokenDto = tokenProvider.generateToken(authenticationToken);
+        tokenService.storeRefreshToken(member.getEmail(), tokenDto);
+
+        return tokenDto;
     }
 
     @Transactional

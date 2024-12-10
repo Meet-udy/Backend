@@ -89,6 +89,7 @@ public class SecurityConfig {
                                 , "/v3/api-docs/**"
                                 , "/v2/swagger-config"
                                 , "/swagger-resources/**").permitAll()
+                        .requestMatchers("/oauth2/callback/kakao").permitAll()
                 );
 
         httpSecurity
