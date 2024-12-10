@@ -33,6 +33,12 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponse.onSuccess(jwtTokenDto));
     }
 
+    @PostMapping("/kakao/login")
+    public ResponseEntity<ApiResponse<JwtTokenDto>> kakaoLogin(@RequestParam String code) {
+        JwtTokenDto jwtTokenDto = memberService.signInWithKakao(code);
+        return ResponseEntity.ok(ApiResponse.onSuccess(jwtTokenDto));
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(@RequestHeader(AUTHORIZATION_HEADER) String accessToken) {
         String token = accessToken.replace(BEARER_PREFIX, "");
