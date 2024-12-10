@@ -28,14 +28,17 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String username;
 
     @Column(nullable = true)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String nickname;
+
+    @Column(nullable = true)
+    private String profileImage;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -45,11 +48,15 @@ public class Member implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-    public void setLoginType(LoginType loginType) {
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateLoginType(LoginType loginType) {
         this.loginType = loginType;
     }
 
-    public void setRoles(List<String> roles) {
+    public void updateRoles(List<String> roles) {
         this.roles = roles;
     }
 
@@ -78,14 +85,6 @@ public class Member implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateLoginType(LoginType loginType) {
-        this.loginType = loginType;
     }
 
 }
