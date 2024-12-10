@@ -7,7 +7,7 @@ spring:
       maximum-pool-size: 4
     url: jdbc:mysql://localhost:3306/meetudy
     username: root
-    password: juj75077507!@
+    password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
