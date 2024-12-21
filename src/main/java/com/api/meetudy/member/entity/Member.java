@@ -38,7 +38,17 @@ public class Member implements UserDetails {
     private String nickname;
 
     @Column(nullable = true)
+    private String major;
+
+    @Column(nullable = true)
+    private String introduction;
+
+    @Column(nullable = true)
     private String profileImage;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer activityScore = 50;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -58,6 +68,14 @@ public class Member implements UserDetails {
 
     public void updateRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public void updateActivityScore(Integer activityScore) {
+        this.activityScore = activityScore;
+    }
+
+    public void updateUsername(String username) {
+        this.username = username;
     }
 
     @Override
