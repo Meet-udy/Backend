@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,7 @@ public class MemberService {
         ResponseEntity<String> userInfo = kakaoLoginService.requestUserInfo(kakaoToken);
 
         Member member = kakaoLoginService.getUserInfo(userInfo);
+        member.updateUsername(member.getEmail());
         Member existMember = memberRepository.findByEmail(member.getEmail()).orElse(null);
 
         if(existMember == null) {
@@ -123,6 +125,12 @@ public class MemberService {
         tokenService.storeRefreshToken(authentication.getName(), jwtToken);
 
         return jwtToken;
+    }
+
+    public Member getCurrentMember(Principal principal) {
+        String username = principal.getName();
+        return memberRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
     private Authentication authenticate(UsernamePasswordAuthenticationToken authenticationToken) {

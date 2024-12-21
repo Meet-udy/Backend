@@ -90,6 +90,7 @@ public class SecurityConfig {
                                 , "/v2/swagger-config"
                                 , "/swagger-resources/**").permitAll()
                         .requestMatchers("/oauth2/callback/kakao").permitAll()
+                        .requestMatchers("/study-groups/**").hasRole("USER")
                 );
 
         httpSecurity

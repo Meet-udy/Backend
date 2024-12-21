@@ -18,9 +18,15 @@ public enum ErrorStatus {
     REFRESH_TOKEN_LOGGED_OUT(HttpStatus.UNAUTHORIZED, "AUTH406", "The refresh token has already been logged out."),
 
     // Member
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER400", "The user is not found."),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER400", "Member not found."),
     USERNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "MEMBER401", "The username already exists."),
     PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "MEMBER402", "The password does not match."),
+
+    // Study Group
+    GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP400", "Group not found."),
+    GROUP_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP401", "Group member not found."),
+    MAX_PARTICIPANTS_EXCEEDED(HttpStatus.BAD_REQUEST, "GROUP402", "Study group has already reached the maximum number of participants."),
+    REQUEST_ALREADY_SENT(HttpStatus.BAD_REQUEST, "GROUP403", "Your participation request for this study group has already been sent."),
     ;
 
 
