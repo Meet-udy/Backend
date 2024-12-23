@@ -32,6 +32,8 @@ public enum Location {
 
     ULSAN,
 
-    BUSAN
+    BUSAN,
+
+    OTHERS
 
 }
