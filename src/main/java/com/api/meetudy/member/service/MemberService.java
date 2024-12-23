@@ -5,6 +5,8 @@ import com.api.meetudy.auth.provider.JwtTokenProvider;
 import com.api.meetudy.auth.service.TokenService;
 import com.api.meetudy.global.response.exception.CustomException;
 import com.api.meetudy.global.response.status.ErrorStatus;
+import com.api.meetudy.member.dto.AdditionalInfoDto;
+import com.api.meetudy.member.dto.KakaoLoginDto;
 import com.api.meetudy.member.dto.SignInDto;
 import com.api.meetudy.member.dto.SignUpDto;
 import com.api.meetudy.member.entity.Member;
@@ -13,6 +15,10 @@ import com.api.meetudy.member.mapper.MemberMapper;
 import com.api.meetudy.member.repository.MemberRepository;
 import com.api.meetudy.oauth.dto.KakaoTokenDto;
 import com.api.meetudy.oauth.service.KakaoLoginService;
+import com.api.meetudy.study.group.enums.StudyCategory;
+import com.api.meetudy.study.recommendation.entity.Interest;
+import com.api.meetudy.study.recommendation.entity.MemberInterest;
+import com.api.meetudy.study.recommendation.repository.InterestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +39,7 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final InterestRepository interestRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
@@ -48,6 +56,8 @@ public class MemberService {
         Member member = memberMapper.toMember(signUpDto);
         member.updatePassword(passwordEncoder.encode(signUpDto.getPassword()));
         member.updateLoginType(LoginType.JWT);
+
+        setMemberInterests(signUpDto.getStudyCategories(), member);
 
         memberRepository.save(member);
 
@@ -73,20 +83,23 @@ public class MemberService {
     }
 
     @Transactional
-    public JwtTokenDto signInWithKakao(String code) {
+    public KakaoLoginDto signInWithKakao(String code) {
         ResponseEntity<String> accessToken = kakaoLoginService.requestAccessToken(code);
         KakaoTokenDto kakaoToken = kakaoLoginService.getAccessToken(accessToken);
 
         ResponseEntity<String> userInfo = kakaoLoginService.requestUserInfo(kakaoToken);
-
         Member member = kakaoLoginService.getUserInfo(userInfo);
         member.updateUsername(member.getEmail());
+
         Member existMember = memberRepository.findByEmail(member.getEmail()).orElse(null);
+        Boolean isFirstLogin = false;
 
         if(existMember == null) {
             member.updateLoginType(LoginType.KAKAO);
             member.updateRoles(Collections.singletonList("ROLE_USER"));
             memberRepository.save(member);
+
+            isFirstLogin = true;
         }
 
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -98,7 +111,17 @@ public class MemberService {
         JwtTokenDto tokenDto = tokenProvider.generateToken(authenticationToken);
         tokenService.storeRefreshToken(member.getEmail(), tokenDto);
 
-        return tokenDto;
+        return memberMapper.toKakaoLoginDto(tokenDto, isFirstLogin);
+    }
+
+    @Transactional
+    public String updateAdditionalInfo(AdditionalInfoDto additionalInfoDto, Member member) {
+        member.updateAdditionalInfo(additionalInfoDto);
+        setMemberInterests(additionalInfoDto.getStudyCategories(), member);
+
+        memberRepository.save(member);
+
+        return "Additional information updated successfully.";
     }
 
     @Transactional
@@ -135,6 +158,18 @@ public class MemberService {
 
     private Authentication authenticate(UsernamePasswordAuthenticationToken authenticationToken) {
         return authenticationManager.authenticate(authenticationToken);
+    }
+
+    private void setMemberInterests(List<StudyCategory> studyCategories, Member member) {
+        if (studyCategories != null) {
+            for (StudyCategory studyCategory : studyCategories) {
+                Interest interest = interestRepository.findByStudyCategory(studyCategory);
+                if (interest != null) {
+                    MemberInterest memberInterest = new MemberInterest(member, interest);
+                    member.getMemberInterests().add(memberInterest);
+                }
+            }
+        }
     }
 
 }

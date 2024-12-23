@@ -8,6 +8,18 @@ public enum StudyCategory {
     // 자격증
     CERTIFICATION,
 
+    // 인문학
+    HUMANITIES,
+
+    // 사회과학
+    SOCIAL_SCIENCES,
+
+    // 디자인
+    DESIGN,
+
+    // 과학
+    SCIENCE,
+
     // 프로그래밍
     PROGRAMMING,
 
@@ -21,6 +33,6 @@ public enum StudyCategory {
     HOBBY,
 
     // 기타
-    OTHER
+    OTHERS
 
 }

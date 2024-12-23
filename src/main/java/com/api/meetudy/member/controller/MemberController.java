@@ -2,6 +2,8 @@ package com.api.meetudy.member.controller;
 
 import com.api.meetudy.auth.dto.JwtTokenDto;
 import com.api.meetudy.global.response.ApiResponse;
+import com.api.meetudy.member.dto.AdditionalInfoDto;
+import com.api.meetudy.member.dto.KakaoLoginDto;
 import com.api.meetudy.member.dto.SignInDto;
 import com.api.meetudy.member.dto.SignUpDto;
 import com.api.meetudy.member.service.MemberService;
@@ -10,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,8 +42,16 @@ public class MemberController {
 
     @Operation(summary = "카카오 로그인 API")
     @PostMapping("/kakao/login")
-    public ResponseEntity<ApiResponse<JwtTokenDto>> kakaoLogin(@RequestParam String code) {
-        JwtTokenDto response = memberService.signInWithKakao(code);
+    public ResponseEntity<ApiResponse<KakaoLoginDto>> kakaoLogin(@RequestParam String code) {
+        KakaoLoginDto response = memberService.signInWithKakao(code);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
+
+    @Operation(summary = "카카오 로그인 시 추가 정보 입력 API")
+    @PostMapping("/additional-info")
+    public ResponseEntity<ApiResponse<String>> updateAdditionalInfo(@Valid @RequestBody AdditionalInfoDto additionalInfoDto,
+                                                                    Principal principal) {
+        String response = memberService.updateAdditionalInfo(additionalInfoDto, memberService.getCurrentMember(principal));
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
