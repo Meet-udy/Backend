@@ -4,37 +4,16 @@ import com.api.meetudy.global.util.ValidEnum;
 import com.api.meetudy.study.group.enums.Location;
 import com.api.meetudy.study.group.enums.StudyCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class SignUpDto {
-
-    @NotBlank
-    @Email(message = "Invalid email format.")
-    @Schema(description = "The email address of the user.",
-            example = "user@example.com")
-    private String email;
-
-    @NotBlank
-    @Pattern(
-            regexp = "^[a-zA-Z0-9]{5,15}$",
-            message = "Username must be 5 to 15 characters long and consist of only letters and numbers."
-    )
-    @Schema(description = "The unique username of the user. It should be between 5 to 15 characters and consist only of letters and numbers.",
-            example = "user123")
-    private String username;
-
-    @NotBlank
-    @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,17}$",
-            message = "Password must be 8 to 17 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character."
-    )
-    @Schema(description = "The password for the user account. It must include at least one uppercase letter, one lowercase letter, one number, and one special character. The length should be between 8 and 17 characters.",
-            example = "Password123!")
-    private String password;
+public class AdditionalInfoDto {
 
     @NotBlank
     @Schema(description = "The nickname of the user.",
