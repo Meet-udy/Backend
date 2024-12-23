@@ -1,5 +1,9 @@
 package com.api.meetudy.member.entity;
 
+import com.api.meetudy.member.dto.AdditionalInfoDto;
+import com.api.meetudy.study.group.enums.Location;
+import com.api.meetudy.study.recommendation.entity.Interest;
+import com.api.meetudy.study.recommendation.entity.MemberInterest;
 import com.api.meetudy.member.enums.LoginType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,11 +48,18 @@ public class Member implements UserDetails {
     private String introduction;
 
     @Column(nullable = true)
+    private Boolean isOnline;
+
+    @Column(nullable = true)
     private String profileImage;
 
     @Column(nullable = false)
     @Builder.Default
     private Integer activityScore = 50;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private Location location;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -57,6 +68,9 @@ public class Member implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MemberInterest> memberInterests = new ArrayList<>();
 
     public void updatePassword(String password) {
         this.password = password;
@@ -76,6 +90,20 @@ public class Member implements UserDetails {
 
     public void updateUsername(String username) {
         this.username = username;
+    }
+
+    public void updateAdditionalInfo(AdditionalInfoDto dto) {
+        this.nickname = dto.getNickname();
+        this.major = dto.getMajor();
+        this.introduction = dto.getIntroduction();
+        this.isOnline = dto.getIsOnline();
+        this.location = dto.getLocation();
+    }
+
+    public List<Interest> getInterests() {
+        return memberInterests.stream()
+                .map(MemberInterest::getInterest)
+                .collect(Collectors.toList());
     }
 
     @Override
