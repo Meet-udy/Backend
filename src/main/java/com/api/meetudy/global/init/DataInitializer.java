@@ -6,7 +6,7 @@ import com.api.meetudy.member.repository.MemberRepository;
 import com.api.meetudy.study.group.entity.StudyGroup;
 import com.api.meetudy.study.group.enums.Location;
 import com.api.meetudy.study.group.enums.StudyCategory;
-import com.api.meetudy.study.group.repository.StudyGroupRepository;
+import com.api.meetudy.study.group.repository.GroupRepository;
 import com.api.meetudy.study.recommendation.entity.Interest;
 import com.api.meetudy.study.recommendation.entity.MemberInterest;
 import com.api.meetudy.study.recommendation.repository.InterestRepository;
@@ -27,7 +27,7 @@ public class DataInitializer implements CommandLineRunner {
     private final MemberRepository memberRepository;
     private final InterestRepository interestRepository;
     private final MemberInterestRepository memberInterestRepository;
-    private final StudyGroupRepository groupRepository;
+    private final GroupRepository groupRepository;
 
     @Override
     public void run(String... args) throws Exception {
