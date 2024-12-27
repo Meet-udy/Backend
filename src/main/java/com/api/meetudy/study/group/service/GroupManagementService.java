@@ -8,8 +8,8 @@ import com.api.meetudy.study.group.entity.StudyGroup;
 import com.api.meetudy.study.group.entity.StudyGroupMember;
 import com.api.meetudy.study.group.enums.GroupMemberStatus;
 import com.api.meetudy.study.group.mapper.StudyGroupMapper;
-import com.api.meetudy.study.group.repository.StudyGroupMemberRepository;
-import com.api.meetudy.study.group.repository.StudyGroupRepository;
+import com.api.meetudy.study.group.repository.GroupMemberRepository;
+import com.api.meetudy.study.group.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GroupManagementService {
 
-    private final StudyGroupRepository groupRepository;
-    private final StudyGroupMemberRepository groupMemberRepository;
+    private final GroupRepository groupRepository;
+    private final GroupMemberRepository groupMemberRepository;
     private final StudyGroupMapper studyGroupMapper;
 
     @Transactional
@@ -59,6 +59,17 @@ public class GroupManagementService {
         groupMemberRepository.delete(groupMember);
 
         return "The join request has been rejected.";
+    }
+
+    @Transactional
+    public String closeRecruitment(Long groupId) {
+        StudyGroup studyGroup = groupRepository.findById(groupId)
+                .orElseThrow(() -> new CustomException(ErrorStatus.GROUP_NOT_FOUND));
+
+        studyGroup.closeRecruitment();
+        groupRepository.save(studyGroup);
+
+        return "Recruitment has been closed.";
     }
 
 }
