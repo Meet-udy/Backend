@@ -18,4 +18,6 @@ public interface GroupMemberRepository extends JpaRepository<StudyGroupMember, L
 
     boolean existsByStudyGroupAndMember(StudyGroup studyGroup, Member member);
 
+    long countByStudyGroupAndStatus(StudyGroup studyGroup, GroupMemberStatus groupMemberStatus);
+
 }
