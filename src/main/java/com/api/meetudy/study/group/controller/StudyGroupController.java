@@ -56,6 +56,13 @@ public class StudyGroupController {
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
+    @Operation(summary = "스터디 그룹 인원 모집 완료 API")
+    @PutMapping("/{groupId}/closure")
+    public ResponseEntity<ApiResponse<String>> closeRecruitment(@PathVariable Long groupId) {
+        String response = groupManagementService.closeRecruitment(groupId);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
+
     @Operation(summary = "스터디 그룹에 대한 가입 요청 조회 API")
     @GetMapping("/{groupId}")
     public ResponseEntity<ApiResponse<List<StudyGroupApplicantDto>>> getJoinRequests(@PathVariable Long groupId) {
