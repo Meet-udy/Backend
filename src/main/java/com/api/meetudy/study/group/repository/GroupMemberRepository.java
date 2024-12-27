@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StudyGroupMemberRepository extends JpaRepository<StudyGroupMember, Long> {
+public interface GroupMemberRepository extends JpaRepository<StudyGroupMember, Long> {
 
     List<StudyGroupMember> findByStudyGroupAndStatus(StudyGroup studyGroup, GroupMemberStatus groupMemberStatus);
 

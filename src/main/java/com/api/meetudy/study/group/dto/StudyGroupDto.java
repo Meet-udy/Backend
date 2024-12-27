@@ -1,6 +1,6 @@
 package com.api.meetudy.study.group.dto;
 
-import com.api.meetudy.global.util.ValidEnum;
+import com.api.meetudy.global.utils.ValidEnum;
 import com.api.meetudy.study.group.enums.Location;
 import com.api.meetudy.study.group.enums.StudyCategory;
 import io.swagger.v3.oas.annotations.media.Schema;

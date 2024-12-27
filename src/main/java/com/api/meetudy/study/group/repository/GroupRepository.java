@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
+public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
 
     List<StudyGroup> findByLeader(Member member);
 

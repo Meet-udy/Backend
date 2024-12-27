@@ -1,4 +1,4 @@
-package com.api.meetudy.global.util;
+package com.api.meetudy.global.utils;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -8,8 +8,8 @@ import com.api.meetudy.study.group.entity.StudyGroup;
 import com.api.meetudy.study.group.entity.StudyGroupMember;
 import com.api.meetudy.study.group.enums.GroupMemberStatus;
 import com.api.meetudy.study.group.mapper.StudyGroupMapper;
-import com.api.meetudy.study.group.repository.StudyGroupMemberRepository;
-import com.api.meetudy.study.group.repository.StudyGroupRepository;
+import com.api.meetudy.study.group.repository.GroupMemberRepository;
+import com.api.meetudy.study.group.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupJoinService {
 
-    private final StudyGroupRepository groupRepository;
-    private final StudyGroupMemberRepository groupMemberRepository;
+    private final GroupRepository groupRepository;
+    private final GroupMemberRepository groupMemberRepository;
     private final StudyGroupMapper studyGroupMapper;
 
     @Transactional
