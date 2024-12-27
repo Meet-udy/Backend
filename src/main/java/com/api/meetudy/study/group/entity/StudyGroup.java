@@ -5,7 +5,9 @@ import com.api.meetudy.study.group.enums.Location;
 import com.api.meetudy.study.group.enums.StudyCategory;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,13 @@ public class StudyGroup {
     @Column(nullable = false)
     private String method;
 
+    @Column(nullable = false)
+    private Boolean isRecruiting;
+
+    @CreatedDate
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StudyCategory category;
@@ -54,5 +63,9 @@ public class StudyGroup {
 
     @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudyGroupMember> members = new ArrayList<>();
+
+    public void closeRecruitment() {
+        this.isRecruiting = false;
+    }
 
 }
