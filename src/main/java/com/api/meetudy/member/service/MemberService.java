@@ -156,11 +156,7 @@ public class MemberService {
                 .orElseThrow(() -> new CustomException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
-    private Authentication authenticate(UsernamePasswordAuthenticationToken authenticationToken) {
-        return authenticationManager.authenticate(authenticationToken);
-    }
-
-    private void setMemberInterests(List<StudyCategory> studyCategories, Member member) {
+    public void setMemberInterests(List<StudyCategory> studyCategories, Member member) {
         if (studyCategories != null) {
             for (StudyCategory studyCategory : studyCategories) {
                 Interest interest = interestRepository.findByStudyCategory(studyCategory);
@@ -170,6 +166,10 @@ public class MemberService {
                 }
             }
         }
+    }
+
+    private Authentication authenticate(UsernamePasswordAuthenticationToken authenticationToken) {
+        return authenticationManager.authenticate(authenticationToken);
     }
 
 }
