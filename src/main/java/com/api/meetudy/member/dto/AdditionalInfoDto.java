@@ -34,6 +34,11 @@ public class AdditionalInfoDto {
             example = "true")
     private Boolean isOnline;
 
+    @NotNull
+    @Schema(description = "Indicates whether the user wants to enable notifications. The value should be 'true' to enable and 'false' to disable.",
+            example = "true")
+    private Boolean notificationEnabled;
+
     @ValidEnum(target = Location.class)
     @Schema(description = "The geographical location of the user.",
             example = "SEOUL")
