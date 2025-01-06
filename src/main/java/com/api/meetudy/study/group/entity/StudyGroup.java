@@ -6,17 +6,20 @@ import com.api.meetudy.study.group.enums.StudyCategory;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @ToString
 @Table(name  = "study_group")
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyGroup {
 
@@ -66,6 +69,15 @@ public class StudyGroup {
 
     public void closeRecruitment() {
         this.isRecruiting = false;
+    }
+
+    public void updateLeader(Member leader) { this.leader = leader; }
+
+    @PrePersist
+    public void prePersist() {
+        if (isRecruiting == null) {
+            isRecruiting = true;
+        }
     }
 
 }
