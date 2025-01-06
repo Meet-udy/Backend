@@ -3,11 +3,10 @@ package com.api.meetudy.study.group.mapper;
 import com.api.meetudy.member.entity.Member;
 import com.api.meetudy.study.group.dto.StudyGroupApplicantDto;
 import com.api.meetudy.study.group.dto.StudyGroupDto;
+import com.api.meetudy.study.group.dto.StudyGroupUpdateDto;
 import com.api.meetudy.study.group.entity.StudyGroup;
 import com.api.meetudy.study.group.entity.StudyGroupMember;
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +31,9 @@ public interface StudyGroupMapper {
     StudyGroupApplicantDto toStudyGroupApplicantDto(StudyGroupMember studyGroupMember);
 
     StudyGroupDto toStudyGroupDto(StudyGroup studyGroup);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateStudyGroupFromDto(StudyGroupUpdateDto dto, @MappingTarget StudyGroup studyGroup);
 
     @IterableMapping(elementTargetType = StudyGroupApplicantDto.class)
     List<StudyGroupApplicantDto> toStudyGroupApplicantDtoList(List<StudyGroupMember> studyGroupMembers);

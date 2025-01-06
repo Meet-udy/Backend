@@ -79,5 +79,4 @@ public class StudyGroupSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get("isRecruiting"));
     }
 
-
 }

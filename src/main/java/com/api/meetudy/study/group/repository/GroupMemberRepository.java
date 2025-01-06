@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GroupMemberRepository extends JpaRepository<StudyGroupMember, Long> {
@@ -19,5 +20,7 @@ public interface GroupMemberRepository extends JpaRepository<StudyGroupMember, L
     boolean existsByStudyGroupAndMember(StudyGroup studyGroup, Member member);
 
     long countByStudyGroupAndStatus(StudyGroup studyGroup, GroupMemberStatus groupMemberStatus);
+
+    Optional<StudyGroupMember> findByMemberIdAndStudyGroupId(Long memberId, Long groupId);
 
 }

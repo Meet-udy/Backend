@@ -2,10 +2,11 @@ package com.api.meetudy.member.mapper;
 
 import com.api.meetudy.auth.dto.JwtTokenDto;
 import com.api.meetudy.member.dto.KakaoLoginDto;
+import com.api.meetudy.member.dto.MemberDto;
 import com.api.meetudy.member.dto.SignUpDto;
+import com.api.meetudy.member.dto.MemberUpdateDto;
 import com.api.meetudy.member.entity.Member;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 import java.util.Collections;
 
@@ -17,5 +18,13 @@ public interface MemberMapper {
     Member toMember(SignUpDto signUpDto);
 
     KakaoLoginDto toKakaoLoginDto(JwtTokenDto jwtTokenDto, Boolean isFirstLogin);
+
+    @Mapping(target = "interests", ignore = true)
+    MemberDto toMemberDto(Member member);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "memberInterests", ignore = true)
+    void updateMemberFromDto(MemberUpdateDto dto, @MappingTarget Member member);
 
 }

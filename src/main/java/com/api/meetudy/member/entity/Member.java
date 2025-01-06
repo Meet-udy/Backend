@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @ToString
@@ -56,6 +57,9 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     @Builder.Default
     private Integer activityScore = 50;
+
+    @Column(nullable = true)
+    private Boolean notificationEnabled;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
@@ -97,6 +101,7 @@ public class Member implements UserDetails {
         this.major = dto.getMajor();
         this.introduction = dto.getIntroduction();
         this.isOnline = dto.getIsOnline();
+        this.notificationEnabled = dto.getNotificationEnabled();
         this.location = dto.getLocation();
     }
 
