@@ -4,8 +4,11 @@ import com.api.meetudy.member.entity.Member;
 import com.api.meetudy.member.enums.LoginType;
 import com.api.meetudy.member.repository.MemberRepository;
 import com.api.meetudy.study.group.entity.StudyGroup;
+import com.api.meetudy.study.group.entity.StudyGroupMember;
+import com.api.meetudy.study.group.enums.GroupMemberStatus;
 import com.api.meetudy.study.group.enums.Location;
 import com.api.meetudy.study.group.enums.StudyCategory;
+import com.api.meetudy.study.group.repository.GroupMemberRepository;
 import com.api.meetudy.study.group.repository.GroupRepository;
 import com.api.meetudy.study.recommendation.entity.Interest;
 import com.api.meetudy.study.recommendation.entity.MemberInterest;
@@ -28,6 +31,7 @@ public class DataInitializer implements CommandLineRunner {
     private final InterestRepository interestRepository;
     private final MemberInterestRepository memberInterestRepository;
     private final GroupRepository groupRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -119,7 +123,7 @@ public class DataInitializer implements CommandLineRunner {
                 .method("온라인으로 진행합니다.")
                 .category(StudyCategory.LANGUAGE)
                 .location(Location.GYEONGGIDO)
-                .leader(member2)
+                .leader(member1)
                 .build();
 
         StudyGroup studyGroup3 = StudyGroup.builder()
@@ -146,10 +150,35 @@ public class DataInitializer implements CommandLineRunner {
                 .leader(member2)
                 .build();
 
+        StudyGroupMember groupMember1 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.ACCEPTED)
+                .member(member2)
+                .studyGroup(studyGroup1)
+                .build();
+
+        StudyGroupMember groupMember2 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.ACCEPTED)
+                .member(member2)
+                .studyGroup(studyGroup2)
+                .build();
+
+        StudyGroupMember groupMember3 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.ACCEPTED)
+                .member(member1)
+                .studyGroup(studyGroup3)
+                .build();
+
+        StudyGroupMember groupMember4 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.ACCEPTED)
+                .member(member1)
+                .studyGroup(studyGroup4)
+                .build();
+
         memberRepository.saveAll(Arrays.asList(member1, member2));
         interestRepository.saveAll(Arrays.asList(interest1, interest2, interest3, interest4));
         memberInterestRepository.saveAll(Arrays.asList(memberInterest1, memberInterest2, memberInterest3, memberInterest4, memberInterest5));
         groupRepository.saveAll(Arrays.asList(studyGroup1, studyGroup2, studyGroup3, studyGroup4));
+        groupMemberRepository.saveAll(Arrays.asList(groupMember1, groupMember2, groupMember3, groupMember4));
     }
 
 }
