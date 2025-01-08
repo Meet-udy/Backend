@@ -1,6 +1,6 @@
-package com.api.meetudy.study.recommendation.repository;
+package com.api.meetudy.interest.repository;
 
-import com.api.meetudy.study.recommendation.entity.MemberInterest;
+import com.api.meetudy.interest.entity.MemberInterest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
