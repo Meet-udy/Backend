@@ -22,7 +22,7 @@ public class StudyGroupMember {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private GroupMemberStatus status = GroupMemberStatus.PENDING;
+    private GroupMemberStatus status = GroupMemberStatus.REQUESTED;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)

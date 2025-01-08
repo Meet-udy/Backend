@@ -75,11 +75,11 @@ public class SearchService {
     }
 
     private int getJoinRequestCount(StudyGroup studyGroup) {
-        return (int) groupMemberRepository.countByStudyGroupAndStatus(studyGroup, GroupMemberStatus.PENDING);
+        return (int) groupMemberRepository.countByStudyGroupAndStatus(studyGroup, GroupMemberStatus.REQUESTED);
     }
 
     private int getParticipantsDiff(StudyGroup studyGroup) {
-        long currentMembersCount = groupMemberRepository.countByStudyGroupAndStatus(studyGroup, GroupMemberStatus.ACCEPTED);
+        long currentMembersCount = groupMemberRepository.countByStudyGroupAndStatus(studyGroup, GroupMemberStatus.MEMBER);
         return Math.abs((int) (studyGroup.getMaxParticipants() - currentMembersCount));
     }
 
