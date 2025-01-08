@@ -15,10 +15,7 @@ import com.api.meetudy.member.mapper.MemberMapper;
 import com.api.meetudy.member.repository.MemberRepository;
 import com.api.meetudy.oauth.dto.KakaoTokenDto;
 import com.api.meetudy.oauth.service.KakaoLoginService;
-import com.api.meetudy.study.group.enums.StudyCategory;
-import com.api.meetudy.study.recommendation.entity.Interest;
-import com.api.meetudy.study.recommendation.entity.MemberInterest;
-import com.api.meetudy.study.recommendation.repository.InterestRepository;
+import com.api.meetudy.interest.service.InterestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,9 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,13 +34,13 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final InterestRepository interestRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final MemberMapper memberMapper;
     private final TokenService tokenService;
     private final KakaoLoginService kakaoLoginService;
+    private final InterestService interestService;
 
     @Transactional
     public String signUp(SignUpDto signUpDto) {
@@ -57,7 +52,7 @@ public class MemberService {
         member.updatePassword(passwordEncoder.encode(signUpDto.getPassword()));
         member.updateLoginType(LoginType.JWT);
 
-        setMemberInterests(signUpDto.getStudyCategories(), member);
+        interestService.setMemberInterests(signUpDto.getStudyCategories(), member);
 
         memberRepository.save(member);
 
@@ -117,7 +112,7 @@ public class MemberService {
     @Transactional
     public String updateAdditionalInfo(AdditionalInfoDto additionalInfoDto, Member member) {
         member.updateAdditionalInfo(additionalInfoDto);
-        setMemberInterests(additionalInfoDto.getStudyCategories(), member);
+        interestService.setMemberInterests(additionalInfoDto.getStudyCategories(), member);
 
         memberRepository.save(member);
 
@@ -148,24 +143,6 @@ public class MemberService {
         tokenService.storeRefreshToken(authentication.getName(), jwtToken);
 
         return jwtToken;
-    }
-
-    public Member getCurrentMember(Principal principal) {
-        String username = principal.getName();
-        return memberRepository.findByUsername(username)
-                .orElseThrow(() -> new CustomException(ErrorStatus.MEMBER_NOT_FOUND));
-    }
-
-    public void setMemberInterests(List<StudyCategory> studyCategories, Member member) {
-        if (studyCategories != null) {
-            for (StudyCategory studyCategory : studyCategories) {
-                Interest interest = interestRepository.findByStudyCategory(studyCategory);
-                if (interest != null) {
-                    MemberInterest memberInterest = new MemberInterest(member, interest);
-                    member.getMemberInterests().add(memberInterest);
-                }
-            }
-        }
     }
 
     private Authentication authenticate(UsernamePasswordAuthenticationToken authenticationToken) {
