@@ -10,10 +10,10 @@ import com.api.meetudy.study.group.enums.Location;
 import com.api.meetudy.study.group.enums.StudyCategory;
 import com.api.meetudy.study.group.repository.GroupMemberRepository;
 import com.api.meetudy.study.group.repository.GroupRepository;
-import com.api.meetudy.study.recommendation.entity.Interest;
-import com.api.meetudy.study.recommendation.entity.MemberInterest;
-import com.api.meetudy.study.recommendation.repository.InterestRepository;
-import com.api.meetudy.study.recommendation.repository.MemberInterestRepository;
+import com.api.meetudy.interest.entity.Interest;
+import com.api.meetudy.interest.entity.MemberInterest;
+import com.api.meetudy.interest.repository.InterestRepository;
+import com.api.meetudy.interest.repository.MemberInterestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -111,7 +111,6 @@ public class DataInitializer implements CommandLineRunner {
                 .method("온라인으로 진행하며, 각자 코드를 깃허브에 올려 코드 리뷰를 진행합니다.")
                 .category(StudyCategory.PROGRAMMING)
                 .location(Location.OTHERS)
-                .leader(member1)
                 .build();
 
         StudyGroup studyGroup2 = StudyGroup.builder()
@@ -123,7 +122,6 @@ public class DataInitializer implements CommandLineRunner {
                 .method("온라인으로 진행합니다.")
                 .category(StudyCategory.LANGUAGE)
                 .location(Location.GYEONGGIDO)
-                .leader(member1)
                 .build();
 
         StudyGroup studyGroup3 = StudyGroup.builder()
@@ -135,7 +133,6 @@ public class DataInitializer implements CommandLineRunner {
                 .method("오프라인으로 경기도 스터디 카페에서 진행합니다.")
                 .category(StudyCategory.CERTIFICATION)
                 .location(Location.GYEONGGIDO)
-                .leader(member2)
                 .build();
 
         StudyGroup studyGroup4 = StudyGroup.builder()
@@ -147,29 +144,52 @@ public class DataInitializer implements CommandLineRunner {
                 .method("오프라인으로 서울 스터디 카페에서 진행합니다.")
                 .category(StudyCategory.CAREER)
                 .location(Location.SEOUL)
-                .leader(member2)
                 .build();
 
         StudyGroupMember groupMember1 = StudyGroupMember.builder()
-                .status(GroupMemberStatus.ACCEPTED)
-                .member(member2)
+                .status(GroupMemberStatus.LEADER)
+                .member(member1)
                 .studyGroup(studyGroup1)
                 .build();
 
         StudyGroupMember groupMember2 = StudyGroupMember.builder()
-                .status(GroupMemberStatus.ACCEPTED)
+                .status(GroupMemberStatus.MEMBER)
+                .member(member2)
+                .studyGroup(studyGroup1)
+                .build();
+
+        StudyGroupMember groupMember3 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.LEADER)
+                .member(member1)
+                .studyGroup(studyGroup2)
+                .build();
+
+        StudyGroupMember groupMember4 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.MEMBER)
                 .member(member2)
                 .studyGroup(studyGroup2)
                 .build();
 
-        StudyGroupMember groupMember3 = StudyGroupMember.builder()
-                .status(GroupMemberStatus.ACCEPTED)
+        StudyGroupMember groupMember5 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.LEADER)
+                .member(member2)
+                .studyGroup(studyGroup3)
+                .build();
+
+        StudyGroupMember groupMember6 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.MEMBER)
                 .member(member1)
                 .studyGroup(studyGroup3)
                 .build();
 
-        StudyGroupMember groupMember4 = StudyGroupMember.builder()
-                .status(GroupMemberStatus.ACCEPTED)
+        StudyGroupMember groupMember7 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.LEADER)
+                .member(member2)
+                .studyGroup(studyGroup4)
+                .build();
+
+        StudyGroupMember groupMember8 = StudyGroupMember.builder()
+                .status(GroupMemberStatus.MEMBER)
                 .member(member1)
                 .studyGroup(studyGroup4)
                 .build();
@@ -178,7 +198,7 @@ public class DataInitializer implements CommandLineRunner {
         interestRepository.saveAll(Arrays.asList(interest1, interest2, interest3, interest4));
         memberInterestRepository.saveAll(Arrays.asList(memberInterest1, memberInterest2, memberInterest3, memberInterest4, memberInterest5));
         groupRepository.saveAll(Arrays.asList(studyGroup1, studyGroup2, studyGroup3, studyGroup4));
-        groupMemberRepository.saveAll(Arrays.asList(groupMember1, groupMember2, groupMember3, groupMember4));
+        groupMemberRepository.saveAll(Arrays.asList(groupMember1, groupMember2, groupMember3, groupMember4, groupMember5, groupMember6, groupMember7, groupMember8));
     }
 
 }
