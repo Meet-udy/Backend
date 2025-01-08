@@ -1,6 +1,7 @@
 package com.api.meetudy.member.controller;
 
 import com.api.meetudy.auth.dto.JwtTokenDto;
+import com.api.meetudy.auth.service.AuthenticationService;
 import com.api.meetudy.global.response.ApiResponse;
 import com.api.meetudy.member.dto.AdditionalInfoDto;
 import com.api.meetudy.member.dto.KakaoLoginDto;
@@ -21,6 +22,7 @@ import java.security.Principal;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AuthenticationService authenticationService;
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String REFRESH_TOKEN_PARAM = "refreshToken";
@@ -51,7 +53,7 @@ public class MemberController {
     @PostMapping("/additional-info")
     public ResponseEntity<ApiResponse<String>> updateAdditionalInfo(@Valid @RequestBody AdditionalInfoDto additionalInfoDto,
                                                                     Principal principal) {
-        String response = memberService.updateAdditionalInfo(additionalInfoDto, memberService.getCurrentMember(principal));
+        String response = memberService.updateAdditionalInfo(additionalInfoDto, authenticationService.getCurrentMember(principal));
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
