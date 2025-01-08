@@ -2,8 +2,8 @@ package com.api.meetudy.member.entity;
 
 import com.api.meetudy.member.dto.AdditionalInfoDto;
 import com.api.meetudy.study.group.enums.Location;
-import com.api.meetudy.study.recommendation.entity.Interest;
-import com.api.meetudy.study.recommendation.entity.MemberInterest;
+import com.api.meetudy.interest.entity.Interest;
+import com.api.meetudy.interest.entity.MemberInterest;
 import com.api.meetudy.member.enums.LoginType;
 import jakarta.persistence.*;
 import lombok.*;
