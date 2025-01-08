@@ -1,6 +1,9 @@
 package com.api.meetudy.study.group.entity;
 
+import com.api.meetudy.global.response.exception.CustomException;
+import com.api.meetudy.global.response.status.ErrorStatus;
 import com.api.meetudy.member.entity.Member;
+import com.api.meetudy.study.group.enums.GroupMemberStatus;
 import com.api.meetudy.study.group.enums.Location;
 import com.api.meetudy.study.group.enums.StudyCategory;
 import jakarta.persistence.*;
@@ -60,10 +63,6 @@ public class StudyGroup {
     @Column(nullable = false)
     private Location location;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_id", nullable = false)
-    private Member leader;
-
     @OneToMany(mappedBy = "studyGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudyGroupMember> members = new ArrayList<>();
 
@@ -71,13 +70,18 @@ public class StudyGroup {
         this.isRecruiting = false;
     }
 
-    public void updateLeader(Member leader) { this.leader = leader; }
-
     @PrePersist
     public void prePersist() {
         if (isRecruiting == null) {
             isRecruiting = true;
         }
+    }
+
+    public StudyGroupMember getLeader() {
+        return members.stream()
+                .filter(member -> member.getStatus() == GroupMemberStatus.LEADER)
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
 }
