@@ -2,11 +2,12 @@ package com.api.meetudy.mypage.service;
 
 import com.api.meetudy.global.response.exception.CustomException;
 import com.api.meetudy.global.response.status.ErrorStatus;
+import com.api.meetudy.global.utils.LeaderAccessValidator;
+import com.api.meetudy.interest.service.InterestService;
 import com.api.meetudy.member.dto.MemberDto;
 import com.api.meetudy.member.dto.MemberUpdateDto;
 import com.api.meetudy.member.entity.Member;
 import com.api.meetudy.member.mapper.MemberMapper;
-import com.api.meetudy.member.service.MemberService;
 import com.api.meetudy.study.group.dto.StudyGroupUpdateDto;
 import com.api.meetudy.study.group.entity.StudyGroup;
 import com.api.meetudy.study.group.entity.StudyGroupMember;
@@ -31,7 +32,8 @@ public class MyPageService {
     private final GroupMemberRepository groupMemberRepository;
     private final MemberMapper memberMapper;
     private final StudyGroupMapper groupMapper;
-    private final MemberService memberService;
+    private final InterestService interestService;
+    private final LeaderAccessValidator leaderAccessValidator;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
@@ -56,7 +58,7 @@ public class MyPageService {
 
         if(updateMemberDto.getInterests() != null) {
             List<StudyCategory> interests = updateMemberDto.getInterests();
-            memberService.setMemberInterests(interests, member);
+            interestService.setMemberInterests(interests, member);
         }
 
         return "User information has been updated.";
@@ -67,7 +69,7 @@ public class MyPageService {
         StudyGroup studyGroup = groupRepository.findById(groupId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.GROUP_NOT_FOUND));
 
-        checkLeaderAccess(member, studyGroup);
+        leaderAccessValidator.checkLeaderAccess(member, studyGroup);
 
         groupMapper.updateStudyGroupFromDto(groupUpdateDto, studyGroup);
 
@@ -79,7 +81,7 @@ public class MyPageService {
         StudyGroup studyGroup = groupRepository.findById(groupId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.GROUP_NOT_FOUND));
 
-        checkLeaderAccess(member, studyGroup);
+        leaderAccessValidator.checkLeaderAccess(member, studyGroup);
 
         StudyGroupMember groupMember = groupMemberRepository.findByMemberIdAndStudyGroupId(memberId, groupId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.NO_SUCH_MEMBER_IN_STUDY_GROUP));
@@ -94,27 +96,20 @@ public class MyPageService {
         StudyGroup studyGroup = groupRepository.findById(groupId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.GROUP_NOT_FOUND));
 
-        checkLeaderAccess(member, studyGroup);
+        leaderAccessValidator.checkLeaderAccess(member, studyGroup);
 
         StudyGroupMember newLeader = groupMemberRepository.findByMemberIdAndStudyGroupId(newLeaderId, groupId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.NO_SUCH_MEMBER_IN_STUDY_GROUP));
 
-        Member previousLeader = studyGroup.getLeader();
+        StudyGroupMember previousLeader = studyGroup.getLeader();
+        previousLeader.setStatus(GroupMemberStatus.MEMBER);
+        newLeader.setStatus(GroupMemberStatus.LEADER);
 
-        StudyGroupMember previousLeaderMember = StudyGroupMember.builder()
-                .member(previousLeader)
-                .studyGroup(studyGroup)
-                .status(GroupMemberStatus.ACCEPTED)
-                .build();
-
-        groupMemberRepository.save(previousLeaderMember);
+        groupMemberRepository.save(previousLeader);
         groupMemberRepository.delete(newLeader);
-
-        studyGroup.updateLeader(newLeader.getMember());
 
         return "Leadership has been delegated to the member.";
     }
-
 
     @Transactional
     public String leaveGroup(Long groupId, Member member) {
@@ -131,12 +126,6 @@ public class MyPageService {
         groupMemberRepository.delete(groupMember);
 
         return "You have successfully left the group.";
-    }
-
-    private void checkLeaderAccess(Member member, StudyGroup studyGroup) {
-        if (!studyGroup.getLeader().getId().equals(member.getId())) {
-            throw new CustomException(ErrorStatus.GROUP_LEADER_ACCESS_ONLY);
-        }
     }
 
 }

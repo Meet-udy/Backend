@@ -2,10 +2,13 @@ package com.api.meetudy.study.group.enums;
 
 public enum GroupMemberStatus {
 
-    // 요청 대기
-    PENDING,
+    // 가입 요청을 보낸 사용자
+    REQUESTED,
 
-    // 가입 승인
-    ACCEPTED
+    // 스터디 그룹 멤버
+    MEMBER,
+
+    // 스터디 그룹 리더
+    LEADER
 
 }

@@ -1,4 +1,4 @@
-package com.api.meetudy.study.recommendation.entity;
+package com.api.meetudy.interest.entity;
 
 import com.api.meetudy.study.group.enums.StudyCategory;
 import jakarta.persistence.*;

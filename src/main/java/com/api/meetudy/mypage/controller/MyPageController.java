@@ -1,9 +1,9 @@
 package com.api.meetudy.mypage.controller;
 
+import com.api.meetudy.auth.service.AuthenticationService;
 import com.api.meetudy.global.response.ApiResponse;
 import com.api.meetudy.member.dto.MemberDto;
 import com.api.meetudy.member.dto.MemberUpdateDto;
-import com.api.meetudy.member.service.MemberService;
 import com.api.meetudy.mypage.service.MyPageService;
 import com.api.meetudy.study.group.dto.StudyGroupUpdateDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,12 +20,12 @@ import java.security.Principal;
 public class MyPageController {
 
     private final MyPageService myPageService;
-    private final MemberService memberService;
+    private final AuthenticationService authenticationService;
 
     @Operation(summary = "사용자 프로필 조회 API")
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<MemberDto>> getMemberProfile(Principal principal) {
-        MemberDto message = myPageService.getMemberProfile(memberService.getCurrentMember(principal));
+        MemberDto message = myPageService.getMemberProfile(authenticationService.getCurrentMember(principal));
         return ResponseEntity.ok(ApiResponse.onSuccess(message));
     }
 
@@ -33,7 +33,7 @@ public class MyPageController {
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse<String>> updateMember(@Valid @RequestBody MemberUpdateDto memberUpdateDto,
                                                                Principal principal) {
-        String message = myPageService.updateMember(memberUpdateDto, memberService.getCurrentMember(principal));
+        String message = myPageService.updateMember(memberUpdateDto, authenticationService.getCurrentMember(principal));
         return ResponseEntity.ok(ApiResponse.onSuccess(message));
     }
 
@@ -42,7 +42,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<String>> updateGroupInfo(@Valid @RequestBody StudyGroupUpdateDto groupUpdateDto,
                                                                @PathVariable Long groupId,
                                                                Principal principal) {
-        String message = myPageService.updateGroupInfo(groupId, groupUpdateDto, memberService.getCurrentMember(principal));
+        String message = myPageService.updateGroupInfo(groupId, groupUpdateDto, authenticationService.getCurrentMember(principal));
         return ResponseEntity.ok(ApiResponse.onSuccess(message));
     }
 
@@ -51,7 +51,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<String>> removeMember(@PathVariable Long groupId,
                                                             @PathVariable Long memberId,
                                                             Principal principal) {
-        String message = myPageService.removeMember(groupId, memberId, memberService.getCurrentMember(principal));
+        String message = myPageService.removeMember(groupId, memberId, authenticationService.getCurrentMember(principal));
         return ResponseEntity.ok(ApiResponse.onSuccess(message));
     }
 
@@ -60,7 +60,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<String>> delegateLeader(@PathVariable Long groupId,
                                                               @PathVariable Long newLeaderId,
                                                               Principal principal) {
-        String message = myPageService.delegateLeader(groupId, newLeaderId, memberService.getCurrentMember(principal));
+        String message = myPageService.delegateLeader(groupId, newLeaderId, authenticationService.getCurrentMember(principal));
         return ResponseEntity.ok(ApiResponse.onSuccess(message));
     }
 
@@ -68,7 +68,7 @@ public class MyPageController {
     @DeleteMapping("/group/{groupId}")
     public ResponseEntity<ApiResponse<String>> leaveGroup(@PathVariable Long groupId,
                                                           Principal principal) {
-        String message = myPageService.leaveGroup(groupId, memberService.getCurrentMember(principal));
+        String message = myPageService.leaveGroup(groupId, authenticationService.getCurrentMember(principal));
         return ResponseEntity.ok(ApiResponse.onSuccess(message));
     }
 

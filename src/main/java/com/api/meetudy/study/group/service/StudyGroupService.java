@@ -3,7 +3,7 @@ package com.api.meetudy.study.group.service;
 import com.api.meetudy.global.response.exception.CustomException;
 import com.api.meetudy.global.response.status.ErrorStatus;
 import com.api.meetudy.member.entity.Member;
-import com.api.meetudy.study.group.dto.StudyGroupApplicantDto;
+import com.api.meetudy.study.group.dto.StudyGroupDto;
 import com.api.meetudy.study.group.entity.StudyGroup;
 import com.api.meetudy.study.group.entity.StudyGroupMember;
 import com.api.meetudy.study.group.enums.GroupMemberStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GroupJoinService {
+public class StudyGroupService {
 
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
@@ -41,13 +41,21 @@ public class GroupJoinService {
     }
 
     @Transactional(readOnly = true)
-    public List<StudyGroupApplicantDto> getJoinRequests(Long groupId) {
-        StudyGroup studyGroup = groupRepository.findById(groupId)
-                .orElseThrow(() -> new CustomException(ErrorStatus.GROUP_NOT_FOUND));
+    public List<StudyGroupDto> getCreatedStudyGroups(Member member) {
+        List<StudyGroupMember> groupMembers = groupMemberRepository.findByMemberAndStatus(member, GroupMemberStatus.LEADER);
+        return studyGroupMapper.toStudyGroupDtoListFromMembers(groupMembers);
+    }
 
-        List<StudyGroupMember> pendingMembers = groupMemberRepository.findByStudyGroupAndStatus(studyGroup, GroupMemberStatus.PENDING);
+    @Transactional(readOnly = true)
+    public List<StudyGroupDto> getJoinedStudyGroups(Member member) {
+        List<StudyGroupMember> groupMembers = groupMemberRepository.findByMemberAndStatus(member, GroupMemberStatus.MEMBER);
+        return studyGroupMapper.toStudyGroupDtoListFromMembers(groupMembers);
+    }
 
-        return studyGroupMapper.toStudyGroupApplicantDtoList(pendingMembers);
+    @Transactional(readOnly = true)
+    public List<StudyGroupDto> getPendingStudyGroups(Member member) {
+        List<StudyGroupMember> pendingGroupMembers = groupMemberRepository.findByMemberAndStatus(member, GroupMemberStatus.REQUESTED);
+        return studyGroupMapper.toStudyGroupDtoListFromMembers(pendingGroupMembers);
     }
 
 }

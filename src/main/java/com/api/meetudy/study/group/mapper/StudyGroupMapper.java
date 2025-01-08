@@ -20,7 +20,6 @@ public interface StudyGroupMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isOnline", source = "dto.isOnline")
     @Mapping(target = "location", source = "dto.location")
-    @Mapping(target = "leader", source = "leader")
     @Mapping(target = "members", ignore = true)
     StudyGroup toStudyGroup(StudyGroupDto dto, Member leader);
 
