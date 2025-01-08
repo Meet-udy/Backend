@@ -4,10 +4,11 @@ import com.api.meetudy.member.entity.Member;
 import com.api.meetudy.study.group.dto.StudyGroupDto;
 import com.api.meetudy.study.group.entity.StudyGroup;
 import com.api.meetudy.study.group.entity.StudyGroupMember;
+import com.api.meetudy.study.group.enums.GroupMemberStatus;
 import com.api.meetudy.study.group.mapper.StudyGroupMapper;
 import com.api.meetudy.study.group.repository.GroupMemberRepository;
 import com.api.meetudy.study.group.repository.GroupRepository;
-import com.api.meetudy.study.recommendation.entity.Interest;
+import com.api.meetudy.interest.entity.Interest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,9 +51,12 @@ public class RecommendationService {
         List<StudyGroupMember> studyGroupMembers = groupMemberRepository.findByMember(member);
         List<StudyGroup> memberJoinedGroups = studyGroupMembers.stream()
                 .map(StudyGroupMember::getStudyGroup)
-                .collect(Collectors.toList());
+                .toList();
 
-        List<StudyGroup> leaderGroups = groupRepository.findByLeader(member);
+        List<StudyGroupMember> leaderGroupMembers = groupMemberRepository.findByMemberAndStatus(member, GroupMemberStatus.LEADER);
+        List<StudyGroup> leaderGroups = leaderGroupMembers.stream()
+                .map(StudyGroupMember::getStudyGroup)
+                .toList();
 
         Set<StudyGroup> allRelatedGroups = new HashSet<>(memberJoinedGroups);
         allRelatedGroups.addAll(leaderGroups);
