@@ -57,7 +57,7 @@ public class SecurityConfig {
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration configuration = new CorsConfiguration();
                                 configuration.setAllowedOrigins(
-                                        Arrays.asList("http://localhost:5173", "https://ecomarket-cuk.shop"));
+                                        Arrays.asList("http://localhost:3000"));
                                 configuration.setAllowedMethods(Collections.singletonList("*"));
                                 configuration.setAllowCredentials(true);
                                 configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -89,6 +89,8 @@ public class SecurityConfig {
                                 , "/v3/api-docs/**"
                                 , "/v2/swagger-config"
                                 , "/swagger-resources/**").permitAll()
+                        .requestMatchers("/error/**").permitAll()
+                        .requestMatchers("/members/**").permitAll()
                         .requestMatchers("/oauth2/callback/kakao").permitAll()
                         .requestMatchers("/search/**").permitAll()
                         .requestMatchers("/study-groups/**").hasRole("USER")
