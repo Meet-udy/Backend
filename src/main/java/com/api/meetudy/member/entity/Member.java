@@ -74,6 +74,7 @@ public class Member implements UserDetails {
     private List<String> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<MemberInterest> memberInterests = new ArrayList<>();
 
     public void updatePassword(String password) {
