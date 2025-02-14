@@ -41,8 +41,19 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: username
+    password: password
+    properties:
+      mail.smtp.debug: true
+      mail.smtp.timeout: 50000
+      mail.starttls.enable: true
+      mail.smtp.auth: true
+
 jwt:
-  secret: jwt-secret
+  secret: secret
 
 springdoc:
   default-consumes-media-type: application/json

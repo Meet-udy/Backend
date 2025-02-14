@@ -17,11 +17,13 @@ public enum ErrorStatus {
     UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "AUTH405",  "The user is not authenticated."),
     REFRESH_TOKEN_LOGGED_OUT(HttpStatus.UNAUTHORIZED, "AUTH406", "The refresh token has already been logged out."),
     GROUP_LEADER_ACCESS_ONLY(HttpStatus.UNAUTHORIZED, "AUTH407", "The functionality is accessible only to group leaders."),
+    VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH408", "The verification failed."),
 
     // Member
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER400", "Member not found."),
     USERNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "MEMBER401", "The username already exists."),
     PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "MEMBER402", "The password does not match."),
+    SEND_EMAIL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MEMBER403", "Failed to send email."),
 
     // Study Group
     GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP400", "Group not found."),
