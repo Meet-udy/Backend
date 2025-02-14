@@ -1,12 +1,15 @@
 package com.api.meetudy.member.controller;
 
+import com.api.meetudy.auth.dto.EmailDto;
 import com.api.meetudy.auth.dto.JwtTokenDto;
 import com.api.meetudy.auth.service.AuthenticationService;
+import com.api.meetudy.auth.service.EmailService;
 import com.api.meetudy.global.response.ApiResponse;
-import com.api.meetudy.member.dto.AdditionalInfoDto;
-import com.api.meetudy.member.dto.KakaoLoginDto;
-import com.api.meetudy.member.dto.SignInDto;
-import com.api.meetudy.member.dto.SignUpDto;
+import com.api.meetudy.global.response.exception.CustomException;
+import com.api.meetudy.global.response.status.ErrorStatus;
+import com.api.meetudy.member.dto.*;
+import com.api.meetudy.member.entity.Member;
+import com.api.meetudy.member.repository.MemberRepository;
 import com.api.meetudy.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -22,6 +25,8 @@ import java.security.Principal;
 public class MemberController {
 
     private final MemberService memberService;
+    private final EmailService emailService;
+    private final MemberRepository memberRepository;
     private final AuthenticationService authenticationService;
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -74,6 +79,39 @@ public class MemberController {
         JwtTokenDto response = memberService.refreshToken(token, refreshToken);
 
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
+
+    @Operation(summary = "아이디 찾기 API")
+    @PostMapping("/username")
+    public ResponseEntity<ApiResponse<String>> findUsername(@RequestBody EmailDto emailDto) {
+        Member member = memberRepository.findByEmail(emailDto.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorStatus.GROUP_NOT_FOUND));
+        return ResponseEntity.ok(ApiResponse.onSuccess(member.getUsername()));
+    }
+
+    @Operation(summary = "비밀번호 찾기 API")
+    @PostMapping("/password")
+    public ResponseEntity<ApiResponse<String>> findPassword(@RequestBody EmailDto emailDto) {
+        try {
+            String response = emailService.sendPasswordResetEmail(emailDto.getEmail());
+            return ResponseEntity.ok(ApiResponse.onSuccess(response));
+        } catch (Exception e) {
+            throw new CustomException(ErrorStatus.SEND_EMAIL_FAILED);
+        }
+    }
+
+    @Operation(summary = "아이디 중복 확인 API")
+    @PostMapping("/username/duplication")
+    public ResponseEntity<ApiResponse<Boolean>> checkUsernameDuplication(@RequestBody UsernameDuplicationDto duplicationDto) {
+        boolean isUsernameExist = memberRepository.existsByUsername(duplicationDto.getUsername());
+        return ResponseEntity.ok(ApiResponse.onSuccess(isUsernameExist));
+    }
+
+    @Operation(summary = "닉네임 중복 확인 API")
+    @GetMapping("/nickname/duplication")
+    public ResponseEntity<ApiResponse<Boolean>> checkNicknameDuplication(@RequestParam String nickname) {
+        boolean isNicknameExist = memberRepository.existsByNickname(nickname);
+        return ResponseEntity.ok(ApiResponse.onSuccess(isNicknameExist));
     }
 
 }
