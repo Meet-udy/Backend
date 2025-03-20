@@ -92,7 +92,8 @@ public class SecurityConfig {
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/members/**").permitAll()
                         .requestMatchers("/oauth2/callback/kakao").permitAll()
-                        .requestMatchers("/search/**").permitAll()
+                        .requestMatchers("/search/sort").hasRole("USER")
+                        .requestMatchers("/search/filter", "/search").permitAll()
                         .requestMatchers("/study-groups/**").hasRole("USER")
                 );
 
