@@ -83,7 +83,7 @@ public class MemberController {
 
     @Operation(summary = "아이디 찾기 API")
     @PostMapping("/username")
-    public ResponseEntity<ApiResponse<String>> findUsername(@RequestBody EmailDto emailDto) {
+    public ResponseEntity<ApiResponse<String>> findUsername(@Valid @RequestBody EmailDto emailDto) {
         Member member = memberRepository.findByEmail(emailDto.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorStatus.GROUP_NOT_FOUND));
         return ResponseEntity.ok(ApiResponse.onSuccess(member.getUsername()));
@@ -91,9 +91,9 @@ public class MemberController {
 
     @Operation(summary = "비밀번호 찾기 API")
     @PostMapping("/password")
-    public ResponseEntity<ApiResponse<String>> findPassword(@RequestBody EmailDto emailDto) {
+    public ResponseEntity<ApiResponse<String>> findPassword(@Valid @RequestBody PasswordFindingDto findingDto) {
         try {
-            String response = emailService.sendPasswordResetEmail(emailDto.getEmail());
+            String response = emailService.sendPasswordResetEmail(findingDto.getUsername(), findingDto.getEmail());
             return ResponseEntity.ok(ApiResponse.onSuccess(response));
         } catch (Exception e) {
             throw new CustomException(ErrorStatus.SEND_EMAIL_FAILED);
@@ -102,16 +102,16 @@ public class MemberController {
 
     @Operation(summary = "아이디 중복 확인 API")
     @PostMapping("/username/duplication")
-    public ResponseEntity<ApiResponse<Boolean>> checkUsernameDuplication(@RequestBody UsernameDuplicationDto duplicationDto) {
+    public ResponseEntity<ApiResponse<Boolean>> checkUsernameDuplication(@Valid @RequestBody UsernameDuplicationDto duplicationDto) {
         boolean isUsernameExist = memberRepository.existsByUsername(duplicationDto.getUsername());
-        return ResponseEntity.ok(ApiResponse.onSuccess(isUsernameExist));
+        return ResponseEntity.ok(ApiResponse.onSuccess(!isUsernameExist));
     }
 
     @Operation(summary = "닉네임 중복 확인 API")
     @GetMapping("/nickname/duplication")
     public ResponseEntity<ApiResponse<Boolean>> checkNicknameDuplication(@RequestParam String nickname) {
         boolean isNicknameExist = memberRepository.existsByNickname(nickname);
-        return ResponseEntity.ok(ApiResponse.onSuccess(isNicknameExist));
+        return ResponseEntity.ok(ApiResponse.onSuccess(!isNicknameExist));
     }
 
 }

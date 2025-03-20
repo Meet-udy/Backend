@@ -146,6 +146,28 @@ public class DataInitializer implements CommandLineRunner {
                 .location(Location.SEOUL)
                 .build();
 
+        StudyGroup studyGroup5 = StudyGroup.builder()
+                .name("사회과학 스터디")
+                .description("사회과학 스터디입니다.")
+                .duration("2025-03-01 ~ 2025-05-01")
+                .maxParticipants(10)
+                .isOnline(true)
+                .method("온라인 ZOOM으로 진행합니다.")
+                .category(StudyCategory.SOCIAL_SCIENCES)
+                .location(Location.OTHERS)
+                .build();
+
+        StudyGroup studyGroup6 = StudyGroup.builder()
+                .name("피그마 스터디")
+                .description("피그마 스터디입니다.")
+                .duration("2025-03-01 ~ 2025-05-01")
+                .maxParticipants(10)
+                .isOnline(true)
+                .method("온라인 ZOOM으로 진행합니다.")
+                .category(StudyCategory.DESIGN)
+                .location(Location.OTHERS)
+                .build();
+
         StudyGroupMember groupMember1 = StudyGroupMember.builder()
                 .status(GroupMemberStatus.LEADER)
                 .member(member1)
@@ -197,7 +219,7 @@ public class DataInitializer implements CommandLineRunner {
         memberRepository.saveAll(Arrays.asList(member1, member2));
         interestRepository.saveAll(Arrays.asList(interest1, interest2, interest3, interest4));
         memberInterestRepository.saveAll(Arrays.asList(memberInterest1, memberInterest2, memberInterest3, memberInterest4, memberInterest5));
-        groupRepository.saveAll(Arrays.asList(studyGroup1, studyGroup2, studyGroup3, studyGroup4));
+        groupRepository.saveAll(Arrays.asList(studyGroup1, studyGroup2, studyGroup3, studyGroup4, studyGroup5, studyGroup6));
         groupMemberRepository.saveAll(Arrays.asList(groupMember1, groupMember2, groupMember3, groupMember4, groupMember5, groupMember6, groupMember7, groupMember8));
     }
 

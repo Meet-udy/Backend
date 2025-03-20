@@ -10,14 +10,12 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +31,10 @@ public class EmailService {
     private final Map<String, Long> verificationExpiry = new HashMap<>();
     private static final long EXPIRY_TIME = 5 * 60 * 1000;
 
-    public String sendPasswordResetEmail(String sendTo) throws Exception {
+    public String sendPasswordResetEmail(String username, String sendTo) throws Exception {
+        Member member = memberRepository.findByUsernameAndEmail(username, sendTo)
+                .orElseThrow(() -> new CustomException(ErrorStatus.MEMBER_NOT_FOUND));
+
         String password = generateRandomCode();
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
