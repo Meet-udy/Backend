@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class StudyGroupDto {
@@ -55,5 +57,8 @@ public class StudyGroupDto {
     @Schema(description = "The recommendation score of the study group, based on matching the user's interests and preferences.",
             example = "4.5")
     private double score;
+
+    @Schema(description = "The creation timestamp of the study group.")
+    private LocalDateTime createdAt;
 
 }
