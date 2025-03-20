@@ -42,8 +42,8 @@ public class RecommendationService {
         }
 
         return recommendedGroups.stream()
-                .sorted(Comparator.comparingDouble(StudyGroupDto::getScore).reversed())
-                .limit(10)
+                .sorted(Comparator.comparingDouble(StudyGroupDto::getScore).reversed()
+                        .thenComparing(StudyGroupDto::getCreatedAt, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
     }
 
