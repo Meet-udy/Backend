@@ -25,7 +25,7 @@ public class StudyGroupController {
     private final GroupManagementService groupManagementService;
 
     @Operation(summary = "스터디 그룹 가입 요청 API")
-    @PostMapping("/{groupId}")
+    @PostMapping("/{groupId}/join-requests")
     public ResponseEntity<ApiResponse<String>> requestJoinGroup(@PathVariable Long groupId,
                                                                 Principal principal) {
         String message = studyGroupService.requestJoinGroup(groupId, authenticationService.getCurrentMember(principal));
@@ -65,7 +65,7 @@ public class StudyGroupController {
     }
 
     @Operation(summary = "스터디 그룹에 대한 가입 요청 조회 API")
-    @GetMapping("/{groupId}")
+    @GetMapping("/{groupId}/join-requests")
     public ResponseEntity<ApiResponse<List<StudyGroupApplicantDto>>> getJoinRequests(@PathVariable Long groupId,
                                                                                      Principal principal) {
         List<StudyGroupApplicantDto> response = groupManagementService.getJoinRequests(groupId, authenticationService.getCurrentMember(principal));
@@ -90,6 +90,13 @@ public class StudyGroupController {
     @GetMapping("/pending-groups")
     public ResponseEntity<ApiResponse<List<StudyGroupDto>>> getPendingStudyGroups(Principal principal) {
         List<StudyGroupDto> response = studyGroupService.getPendingStudyGroups(authenticationService.getCurrentMember(principal));
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
+
+    @Operation(summary = "특정 스터디 그룹 조회 API")
+    @GetMapping("/{groupId}")
+    public ResponseEntity<ApiResponse<StudyGroupDto>> getStudyGroupById(@PathVariable Long groupId) {
+        StudyGroupDto response = studyGroupService.getStudyGroupById(groupId);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 

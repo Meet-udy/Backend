@@ -58,4 +58,12 @@ public class StudyGroupService {
         return studyGroupMapper.toStudyGroupDtoListFromMembers(pendingGroupMembers);
     }
 
+    @Transactional(readOnly = true)
+    public StudyGroupDto getStudyGroupById(Long groupId) {
+        StudyGroup studyGroup = groupRepository.findById(groupId)
+                .orElseThrow(() -> new CustomException(ErrorStatus.GROUP_NOT_FOUND));
+
+        return studyGroupMapper.toStudyGroupDto(studyGroup);
+    }
+
 }
